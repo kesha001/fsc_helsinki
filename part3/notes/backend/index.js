@@ -10,6 +10,8 @@ const requestLogger = (request, response, next) => {
     console.log('---');
     next();
 }
+
+app.use(express.static("dist"));
 app.use(cors());
 app.use(requestLogger);
 app.use(express.json());
