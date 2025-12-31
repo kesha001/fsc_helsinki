@@ -1,5 +1,6 @@
 const express = require("express");
 const morgan = require("morgan");
+const cors = require("cors");
 
 let persons = [
     { 
@@ -25,6 +26,7 @@ let persons = [
 ]
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 morgan.token('request_data', (req) =>{
@@ -87,7 +89,6 @@ app.delete('/api/persons/:id', (request, response) => {
     const id = request.params.id;
     // const person = persons.find((person) => person.id == id);
     persons = persons.filter((person) => person.id !== id);
-
     response.status(204).end();
 })
 
