@@ -3,31 +3,6 @@ const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 
-
-
-let persons = [
-    { 
-      "id": "1",
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": "2",
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": "3",
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": "4",
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    }
-]
-
 const Person = require("./models/person");
 
 const app = express();
@@ -35,7 +10,7 @@ app.use(express.static('dist'));
 app.use(cors());
 app.use(express.json());
 
-morgan.token('request_data', (req) =>{
+morgan.token('request_data', (req) => {
     if (req.method === 'POST') {
         return JSON.stringify(req.body);
     }
@@ -44,26 +19,18 @@ morgan.token('request_data', (req) =>{
 const logFormat = ":method :url :status :res[content-length] - :response-time ms :request_data"
 app.use(morgan(logFormat));
 
-app.get('/api/persons', (request, response) =>{
-    Person.find({}).then(foundPersons=>{
+app.get('/api/persons', (request, response) => {
+    Person.find({}).then(foundPersons => {
         response.json(foundPersons);
     }) 
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
     const id = request.params.id;
-    Person.findById(id).then(foundPerson=>{
+    Person.findById(id).then(foundPerson => {
         response.json(foundPerson);
-    }).catch(error=>next(error));
+    }).catch(error => next(error));
 })
-
-const generateId = () => {
-    const maxId = persons.length > 0
-        ? Math.max(...persons.map(person => Number(person.id)))
-        : 0;
-    
-    return String(maxId + 1);
-}
 
 app.post('/api/persons', (request, response, next) => {
     // console.log(request.body);
@@ -83,14 +50,14 @@ app.post('/api/persons', (request, response, next) => {
         "number": reqNumber,
     });
 
-    newPerson.save().then(savedPerson=>{
+    newPerson.save().then(savedPerson => {
         response.status(201).json(savedPerson);
     }).catch(error => next(error));
         
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
-    const {name, number} = request.body;
+    const {number} = request.body;
     Person.findById(request.params.id).then(foundPerson => {
         if (!foundPerson){
             response.status(404).end();
@@ -109,18 +76,18 @@ app.put('/api/persons/:id', (request, response, next) => {
 app.delete('/api/persons/:id', (request, response, next) => {
     const id = request.params.id;
 
-    Person.findByIdAndDelete(id).then(deletedPerson => {
+    Person.findByIdAndDelete(id).then(() => {
         response.status(204).end();
-    }).catch(error=>next(error));
+    }).catch(error => next(error));
 })
 
 app.get('/info', (request, response, next) => {
-    Person.countDocuments().then(count=>{
+    Person.countDocuments().then(count => {
         response.write(`Phonebook has info for ${count} people \n`);
         const currentDateTime = new Date().toString();
         response.write(`\n${currentDateTime}`);
         response.end();
-    }).catch(error=>next(error));
+    }).catch(error => next(error));
     
 })
 

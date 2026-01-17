@@ -35,7 +35,7 @@ if (process.argv.length >= 5){
     })
 } else {
     Person.find({}).then(response => {
-        response.forEach(person =>{
+        response.forEach(person => {
             console.log(person);
             mongoose.connection.close();
         })

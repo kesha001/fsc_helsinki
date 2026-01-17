@@ -79,6 +79,11 @@ function App() {
           setNewNumber("");
           displayMessage(`${createdPerson.name} has been added to the list`)
         })
+        .catch(error => {
+          // console.log(error.message);
+          // console.log(error.response.data);
+          displayError(error.response.data.error);
+        })
     }
   }
 
@@ -96,10 +101,17 @@ function App() {
         displayMessage(`${returnedPerson.name}'s number has been updated`);
       })
       .catch(error => {
-        displayError(
-          `Information of ${updatedPerson.name} has already been removed from the server`
-        );
-        setPersons(persons.filter(person => person.id !== updatedPerson.id));
+        displayError(error.response.data.error);
+        // console.log(error);
+        // in backend indexjs there are to catch in app.put
+        // the one outside is for error that is commented under
+        // the one inside is for validation. Not sure, it does not 
+        // work to have same handling as under for both
+        // may be put simple if, idk
+        // displayError(
+        //   `Information of ${updatedPerson.name} has already been removed from the server`
+        // );
+        // setPersons(persons.filter(person => person.id !== updatedPerson.id));
       })
     setNewName("");
     setNewNumber("");
